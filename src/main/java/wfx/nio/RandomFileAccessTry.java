@@ -18,12 +18,12 @@ public class RandomFileAccessTry {
             int bytesRead = fileChannel.read(byteBuffer);
             while (bytesRead != -1) {
 //                System.out.println("Read" + bytesRead);
-                //´Ë´¦ºÜÖØÒª
+                //æ­¤å¤„å¾ˆé‡è¦
                 byteBuffer.flip();
                 while (byteBuffer.hasRemaining()) {
                     char chr = (char)byteBuffer.get();
                     if('\n' == chr){
-                        System.out.println("\n¶ÁÍêÒ»ĞĞÁË");
+                        System.out.println("\nè¯»å®Œä¸€è¡Œäº†");
                         break;
                     }
                     System.out.print(chr);

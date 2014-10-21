@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class PhotoClean {
     private static final String INDEX_FILE = "_index.img";
-    static Font FONT = new Font("Î¢ÈíÑÅºÚ", Font.BOLD, 18);
+    static Font FONT = new Font("å¾®è½¯é›…é»‘", Font.BOLD, 18);
 
     public static final int WIDTH = 8;
     public static final int HEIGHT = 8;
@@ -116,7 +116,7 @@ public class PhotoClean {
     }
 
     /**
-     * ¼ÆËãÍ¼Æ¬Î»Í¼·ÖÖµ£¬ÓÃÓÚÍ¼Æ¬ÏàËÆ±È½Ï£¬Ò»¸öÍ¼Æ¬µÄËõÂÔÍ¼ºÍÔ­Í¼Ïà±È£¬ÊıÖµÒ»°ã±È½Ï½Ó½ü
+     * è®¡ç®—å›¾ç‰‡ä½å›¾åˆ†å€¼ï¼Œç”¨äºå›¾ç‰‡ç›¸ä¼¼æ¯”è¾ƒï¼Œä¸€ä¸ªå›¾ç‰‡çš„ç¼©ç•¥å›¾å’ŒåŸå›¾ç›¸æ¯”ï¼Œæ•°å€¼ä¸€èˆ¬æ¯”è¾ƒæ¥è¿‘
      *
      * @param file
      * @return
@@ -186,7 +186,7 @@ public class PhotoClean {
     }
 
     /**
-     * ¼ÆËã»Ò¶È¾ØÕóµÄÆ½¾ùÖµ
+     * è®¡ç®—ç°åº¦çŸ©é˜µçš„å¹³å‡å€¼
      *
      * @param grays
      * @return
@@ -236,7 +236,7 @@ public class PhotoClean {
     }
 
     public static void main(String[] args) {
-//        PhotoClean.cleanDuplicatedPhotos("d:\\¿ìÅÌ\\photo\\", "d:\\photo\\");
+//        PhotoClean.cleanDuplicatedPhotos("d:\\å¿«ç›˜\\photo\\", "d:\\photo\\");
 //        int avg = 2;
 //        int[] graysA = {0,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,4,2,2,1,0};
 //        String a = PhotoClean.transGrays2String(graysA, avg);
@@ -251,6 +251,6 @@ public class PhotoClean {
 //        int distance = calPictureHamingDistance(fileA, fileB);
 //
 
-        cleanDuplicatedPhotos("d:\\¿ìÅÌ\\photo\\","d:\\photo\\");
+        cleanDuplicatedPhotos("d:\\å¿«ç›˜\\photo\\","d:\\photo\\");
     }
 }
