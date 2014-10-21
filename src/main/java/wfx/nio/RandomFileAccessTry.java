@@ -24,6 +24,7 @@ public class RandomFileAccessTry {
                     char chr = (char)byteBuffer.get();
                     if('\n' == chr){
                         System.out.println("\n读完一行了");
+
                         break;
                     }
                     System.out.print(chr);
