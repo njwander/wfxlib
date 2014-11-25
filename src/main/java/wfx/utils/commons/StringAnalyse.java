@@ -65,12 +65,30 @@ public class StringAnalyse {
         System.out.println(map);
     }
 
+    /**
+     * 计算idb数据库中对数据库的分表。
+     * 招商取模为256
+     *
+     * @param id
+     * @return
+     */
+    public static int getIdbGroup(long id, int mod) {
+        String idStr = Long.toString(id);
+        int tailId;
+        if (idStr.length() < 5) {
+            tailId = Integer.parseInt(idStr);
+        } else {
+            tailId = Integer.parseInt(idStr.substring(idStr.length() - 5));
+        }
+        return tailId % mod;
+    }
+
     private static List<String> getListString(String s) {
         String[] strings = s.split("\n");
         return Arrays.asList(strings);
     }
 
-    public static void menu(){
+    public static void menu() {
         System.out.println("********************************************");
         System.out.println("请选择需要使用的功能：");
         System.out.println("1.统计单词数量");
