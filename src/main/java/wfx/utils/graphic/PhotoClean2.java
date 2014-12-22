@@ -23,19 +23,28 @@ import java.util.List;
  * Created by admin on 14-6-25.
  * Use to clean the duplicated graphic
  */
-public class PhotoClean {
+public class PhotoClean2 {
     private static final String INDEX_FILE = "_index.img";
     static Font FONT = new Font("微软雅黑", Font.BOLD, 18);
 
     public static final int WIDTH = 8;
     public static final int HEIGHT = 8;
+    private static final String TMP_PATH = "D:\\tmpPhoto\\";
 
-    public static boolean cleanDuplicatedPhotos(String standPath, String cleanPath) {
+    public static void cleanDuplicatedPhotos(String standPath, String cleanPath) {
         //loop the standPath and generate the index file
 //        generateIndexFile(standPath);
         Map<String, String> indexMap = loadIndexFile(standPath);
         cleanDuplicatedPhotos(cleanPath, indexMap);
-        return false;
+    }
+
+    /**
+     * 把指定文件夹内部重复的文件删除掉，优先保留最先找到的文件
+     *
+     * @param targetPath
+     */
+    public static void cleanDuplicatedPhotos(String targetPath) {
+        generateIndexAndRemoveDuplicateFile(targetPath, true);
     }
 
     public static Map<String, String> loadIndexFile(String standPath) {
@@ -58,6 +67,7 @@ public class PhotoClean {
                 }
                 line = br.readLine();
             }
+            System.out.println("map size:" + map.size());
             return map;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -67,7 +77,22 @@ public class PhotoClean {
         return null;
     }
 
+    /**
+     * 生成文件的MD5索引文件
+     *
+     * @param standPath
+     */
     public static void generateIndexFile(String standPath) {
+        generateIndexAndRemoveDuplicateFile(standPath, false);
+    }
+
+    /**
+     * 生成文件的MD5索引文件，并且删除重复的文件，优先保留最先找到的文件
+     *
+     * @param standPath
+     * @param removeFile 是否移除重复的文件到临时文件目录中 false 不移除， true 移除
+     */
+    public static void generateIndexAndRemoveDuplicateFile(String standPath, boolean removeFile) {
         File file = new File(standPath + File.separator + INDEX_FILE);
         if (file.exists()) {
             file.delete();
@@ -78,15 +103,24 @@ public class PhotoClean {
             }
         }
 
-        String[] suffixes = {"jpg", "bmp"};
+        String[] suffixes = {"jpg", "bmp", "JPG", "BMP"};
         IOFileFilter fileFilter = new SuffixFileFilter(suffixes, IOCase.INSENSITIVE);
         Collection<File> fileList = FileUtils.listFiles(new File(standPath), fileFilter, TrueFileFilter.INSTANCE);
         if (fileList != null && fileList.size() > 0) {
+            Map<String, File> fileMd5Map = new HashMap<>(fileList.size());
             List<String> resultList = new ArrayList<>(fileList.size());
             for (File tfile : fileList) {
                 String md5 = MD5Util.md5(tfile);
-                String result = md5 + "=" + tfile.getAbsolutePath();
-                resultList.add(result);
+                if (removeFile && fileMd5Map.containsKey(md5)) {
+                    String originFileName = fileMd5Map.get(md5).getAbsolutePath();
+                    String dumplicateFileName = tfile.getAbsolutePath();
+                    System.out.println("【" + dumplicateFileName + "】与文件【" + originFileName +"】重复，被移除");
+                    move2TmpFolder(tfile);
+                } else {
+                    String result = md5 + "=" + tfile.getAbsolutePath();
+                    fileMd5Map.put(md5, tfile);
+                    resultList.add(result);
+                }
             }
             try {
                 FileUtils.writeLines(file, resultList);
@@ -121,7 +155,7 @@ public class PhotoClean {
      * @param file
      * @return
      */
-    public static int[] resizePic2GrayArray(File file, int height, int width)  throws IOException{
+    public static int[] resizePic2GrayArray(File file, int height, int width) throws IOException {
         FileInputStream in = new FileInputStream(file);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageUtil.resizeJpg(in, out, width, height, 1f);
@@ -131,22 +165,22 @@ public class PhotoClean {
         int k = 0;
         System.out.println("x:" + image.getWidth());
         System.out.println("y:" + image.getHeight());
-        for(int i = 0; i < image.getHeight(); i++){
-            for (int j = 0; j < image.getWidth(); j++){
-               Color color = new Color(image.getRGB(j, i));
+        for (int i = 0; i < image.getHeight(); i++) {
+            for (int j = 0; j < image.getWidth(); j++) {
+                Color color = new Color(image.getRGB(j, i));
                 int gray = translateRBG2Gry(color);
                 grays[k++] = gray;
             }
         }
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < grays.length; i++){
+        for (int i = 0; i < grays.length; i++) {
             sb.append(grays[i]).append(",");
         }
         System.out.println(sb.toString());
         return grays;
     }
 
-    public static String calPictureString(File file){
+    public static String calPictureString(File file) {
         try {
             int[] grays = resizePic2GrayArray(file, WIDTH, HEIGHT);
             int avgGrays = calculateAvgGray(grays);
@@ -158,7 +192,7 @@ public class PhotoClean {
         return null;
     }
 
-    public static int calPictureHamingDistance(File fileA, File fileB){
+    public static int calPictureHamingDistance(File fileA, File fileB) {
         String strA = calPictureString(fileA);
         String strB = calPictureString(fileB);
         System.out.println("strA:" + strA);
@@ -170,9 +204,10 @@ public class PhotoClean {
     public static boolean move2TmpFolder(File file) {
         String filePath = file.getAbsolutePath();
         Path oldPath = Paths.get(filePath);
-        Path newPath = Paths.get("D:\\tmpPhoto\\" + filePath.split(":")[1]);
+        //保留原来的文件夹的目录结构
+        Path newPath = Paths.get(TMP_PATH + filePath.split(":")[1]);
         try {
-            System.out.println("move file \"" + file.getAbsolutePath() + "\" to \"" + newPath.toFile().getAbsolutePath() + "\"");
+//            System.out.println("move file \"" + file.getAbsolutePath() + "\" to \"" + newPath.toFile().getAbsolutePath() + "\"");
             Path parentPath = newPath.getParent();
             if (!Files.exists(parentPath)) {
                 Files.createDirectories(parentPath);
@@ -209,10 +244,10 @@ public class PhotoClean {
             return null;
         }
         StringBuilder sb = new StringBuilder(64);
-        for(int i = 0; i < grays.length; i++){
-            if(grays[i] >= avg){
+        for (int i = 0; i < grays.length; i++) {
+            if (grays[i] >= avg) {
                 sb.append("1");
-            }else{
+            } else {
                 sb.append("0");
             }
 
@@ -220,15 +255,15 @@ public class PhotoClean {
         return sb.toString();
     }
 
-    public static int calHammingDistance(String stra, String strb){
-        if(stra == null || strb == null || stra.length() != strb.length()){
+    public static int calHammingDistance(String stra, String strb) {
+        if (stra == null || strb == null || stra.length() != strb.length()) {
             return -1;
         }
         int distance = 0;
         char[] chara = stra.toCharArray();
         char[] charb = strb.toCharArray();
-        for(int i = 0; i < stra.length(); i++){
-            if(chara[i] != charb[i]){
+        for (int i = 0; i < stra.length(); i++) {
+            if (chara[i] != charb[i]) {
                 distance++;
             }
         }
@@ -249,8 +284,8 @@ public class PhotoClean {
 //        File fileA = new File("d:\\tmpPhoto\\photo\\qiuqiu\\http_imgload.jpg");
 //            File fileB = new File("d:\\tmpPhoto\\photo\\qiuqiu\\http_imgload_small.jpg");
 //        int distance = calPictureHamingDistance(fileA, fileB);
-//
+        cleanDuplicatedPhotos("d:\\快盘\\photo\\", "d:\\勤勤手机备份\\");
+//        cleanDuplicatedPhotos("D:\\勤勤手机备份\\");
 
-        cleanDuplicatedPhotos("d:\\快盘\\photo\\","d:\\photo\\");
     }
 }

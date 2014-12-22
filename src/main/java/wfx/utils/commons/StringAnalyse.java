@@ -75,11 +75,12 @@ public class StringAnalyse {
     public static int getIdbGroup(long id, int mod) {
         String idStr = Long.toString(id);
         int tailId;
-        if (idStr.length() < 5) {
+        if (idStr.length() < 4) {
             tailId = Integer.parseInt(idStr);
         } else {
-            tailId = Integer.parseInt(idStr.substring(idStr.length() - 5));
+            tailId = Integer.parseInt(idStr.substring(idStr.length() - 4));
         }
+        System.out.println("tailId:" +  tailId);
         return tailId % mod;
     }
 
@@ -96,6 +97,6 @@ public class StringAnalyse {
     }
 
     public static void main(String[] args) {
-        StringAnalyse.statisticWordsNum();
+        System.out.println(StringAnalyse.getIdbGroup(113280016505l, 256));
     }
 }
