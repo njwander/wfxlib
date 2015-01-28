@@ -103,7 +103,8 @@ public class PhotoClean2 {
             }
         }
 
-        String[] suffixes = {"jpg", "bmp", "JPG", "BMP"};
+//        String[] suffixes = {"jpg", "bmp", "JPG", "BMP"};
+        String[] suffixes = {"avi", "mp4"};
         IOFileFilter fileFilter = new SuffixFileFilter(suffixes, IOCase.INSENSITIVE);
         Collection<File> fileList = FileUtils.listFiles(new File(standPath), fileFilter, TrueFileFilter.INSTANCE);
         if (fileList != null && fileList.size() > 0) {
@@ -114,7 +115,7 @@ public class PhotoClean2 {
                 if (removeFile && fileMd5Map.containsKey(md5)) {
                     String originFileName = fileMd5Map.get(md5).getAbsolutePath();
                     String dumplicateFileName = tfile.getAbsolutePath();
-                    System.out.println("【" + dumplicateFileName + "】与文件【" + originFileName +"】重复，被移除");
+                    System.out.println("【" + dumplicateFileName + "】与文件【" + originFileName + "】重复，被移除");
                     move2TmpFolder(tfile);
                 } else {
                     String result = md5 + "=" + tfile.getAbsolutePath();
@@ -131,7 +132,7 @@ public class PhotoClean2 {
     }
 
     private static void cleanDuplicatedPhotos(String cleanPath, Map<String, String> indexMap) {
-        String[] suffixes = {"jpg", "bmp"};
+        String[] suffixes = {"avi", "mp4"};
         IOFileFilter fileFilter = new SuffixFileFilter(suffixes, IOCase.INSENSITIVE);
         Collection<File> fileList = FileUtils.listFiles(new File(cleanPath), fileFilter, TrueFileFilter.INSTANCE);
         for (File file : fileList) {
@@ -207,7 +208,10 @@ public class PhotoClean2 {
         //保留原来的文件夹的目录结构
         Path newPath = Paths.get(TMP_PATH + filePath.split(":")[1]);
         try {
-//            System.out.println("move file \"" + file.getAbsolutePath() + "\" to \"" + newPath.toFile().getAbsolutePath() + "\"");
+            System.out.println("move file \"" + file.getAbsolutePath() + "\" to \"" + newPath.toFile().getAbsolutePath() + "\"");
+//            if (true) {
+//                return true;
+//            }
             Path parentPath = newPath.getParent();
             if (!Files.exists(parentPath)) {
                 Files.createDirectories(parentPath);
@@ -284,7 +288,7 @@ public class PhotoClean2 {
 //        File fileA = new File("d:\\tmpPhoto\\photo\\qiuqiu\\http_imgload.jpg");
 //            File fileB = new File("d:\\tmpPhoto\\photo\\qiuqiu\\http_imgload_small.jpg");
 //        int distance = calPictureHamingDistance(fileA, fileB);
-        cleanDuplicatedPhotos("d:\\快盘\\photo\\", "d:\\勤勤手机备份\\");
+        cleanDuplicatedPhotos("d:\\快盘\\video\\", "d:\\快盘\\photo\\");
 //        cleanDuplicatedPhotos("D:\\勤勤手机备份\\");
 
     }

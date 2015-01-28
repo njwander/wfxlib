@@ -8,9 +8,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by admin on 14-6-25.
+ * Created by fanxin.wfx on 14-6-25.
  */
 public class MD5Util {
+
+    private static char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     public static String md5(File file) {
         if (file == null || !file.exists()) {
@@ -34,7 +36,6 @@ public class MD5Util {
     }
 
     public static String md5(byte[] btInput) {
-        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         // 获得MD5摘要算法的 MessageDigest 对象
         MessageDigest mdInst = null;
         try {
@@ -57,10 +58,5 @@ public class MD5Util {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-        File file = new File("d:\\mysql-connector-java-5.1.6.jar");
-        System.out.println(MD5Util.md5(file));
     }
 }
